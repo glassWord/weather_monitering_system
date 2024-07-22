@@ -1,86 +1,64 @@
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-import tkinter as tk
-from data.serial_data import weather_data
+from data.serial_data import weather_data  # Import the weather_data function
 
-# Tkinter Setup
-root = tk.Tk()
-root.title("Weather Prediction")
+# Initialize x_axis
+x_axis = 0
 
-# Create labels to display the predictions
-label_temp = tk.Label(root, text="Predicted Temperature: ", font=('Helvetica', 12))
-label_temp.pack(pady=5)
+# Initialize DataFrame with initial data
+initial_data = {
+    'Temperature': [30, 35, 40, 35, 25, 25, 35, 40, 30, 25],
+    'Humidity': [85, 80, 70, 75, 90, 95, 65, 70, 80, 75],
+    'AirQuality': [40, 45, 30, 35, 40, 55, 45, 30, 40, 55],
+}
+df = pd.DataFrame(initial_data)
 
-label_humid = tk.Label(root, text="Predicted Humidity: ", font=('Helvetica', 12))
-label_humid.pack(pady=5)
+# Initialize figure and axis
+fig, ax = plt.subplots()
+xdata, ydata_temp, ydata_humid, ydata_air = [], [], [], []
+line_temp, = plt.plot([], [], 'r-', label='Temperature')
+line_humid, = plt.plot([], [], 'g-', label='Humidity')
+line_air, = plt.plot([], [], 'b-', label='AirQuality')
 
-label_air = tk.Label(root, text="Predicted Air Quality: ", font=('Helvetica', 12))
-label_air.pack(pady=5)
+def init():
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 120)  # Adjusted y-limits to fit all data ranges
+    ax.legend()
+    return line_temp, line_humid, line_air
 
-# Function to predict weather
-def predict_weather(data):
-    df = pd.DataFrame(data)
+def update(frame):
+    global x_axis, df
+
+    # Fetch new data
+    new_data = weather_data()
+
+    # Append new data to the DataFrame
+    df = df._append(new_data, ignore_index=True)
+
+    # Append new data to the lists
+    xdata.append(x_axis)
+    ydata_temp.append(new_data['Temperature'])
+    ydata_humid.append(new_data['Humidity'])
+    ydata_air.append(new_data['AirQuality'])
     
-    # Features and targets
-    X = df.drop(columns=['Temperature', 'Humidity', 'AirQuality'])
-    if X.empty:  # In case there are no features left after dropping target columns
-        X = pd.DataFrame([1] * len(df))  # Add a dummy feature if no features exist
-    y_temp = df['Temperature']
-    y_humid = df['Humidity']
-    y_air_quality = df['AirQuality']
+    # Update line data
+    line_temp.set_data(xdata, ydata_temp)
+    line_humid.set_data(xdata, ydata_humid)
+    line_air.set_data(xdata, ydata_air)
     
-    # Split the data into training/testing sets for each target
-    X_train_temp, X_test_temp, y_train_temp, y_test_temp = train_test_split(X, y_temp, test_size=0.2, random_state=42)
-    X_train_humid, X_test_humid, y_train_humid, y_test_humid = train_test_split(X, y_humid, test_size=0.2, random_state=42)
-    X_train_air, X_test_air, y_train_air, y_test_air = train_test_split(X, y_air_quality, test_size=0.2, random_state=42)
+    # Adjust x-axis dynamically
+    ax.set_xlim(max(0, x_axis - 100), x_axis + 10)
+    ax.relim()
+    ax.autoscale_view()
 
-    # Model Training
-    model_temp = LinearRegression()
-    model_temp.fit(X_train_temp, y_train_temp)
-    
-    model_humid = LinearRegression()
-    model_humid.fit(X_train_humid, y_train_humid)
-    
-    model_air = LinearRegression()
-    model_air.fit(X_train_air, y_train_air)
-    
-    # Prediction
-    y_pred_temp = model_temp.predict(X_test_temp)
-    y_pred_humid = model_humid.predict(X_test_humid)
-    y_pred_air = model_air.predict(X_test_air)
+    # Increment x_axis
+    x_axis += 1
 
-    return [[y_pred_temp, y_pred_humid, y_pred_air], [y_test_temp, y_test_humid, y_test_air]]
+    return line_temp, line_humid, line_air
 
-# Function to print results
-def result_print(y_pred_temp, y_pred_humid, y_pred_air):
-    keys = ["Predicted Temperature:", "Predicted Humidity:", "Predicted Air Quality:"]
-    pred_data = [y_pred_temp, y_pred_humid, y_pred_air]
-    values_pred = []
-    # Loop to print values with key
-    key_index = 0
-    for i in pred_data:
-        values_to_print = sum(i) / len(i)
-        to_print = f'{keys[key_index]} {values_to_print}'
-        print(to_print)
-        values_pred.append(values_to_print)
-        key_index += 1
-    return values_pred
+x_axis = 0
 
-# Function to update labels
-def update_labels():
-    res = predict_weather(weather_data())
-    pred_weather_values = result_print(*res[0])
-    label_temp.config(text=f"Predicted Temperature: {pred_weather_values[0]:.2f}")
-    label_humid.config(text=f"Predicted Humidity: {pred_weather_values[1]:.2f}")
-    label_air.config(text=f"Predicted Air Quality: {pred_weather_values[2]:.2f}")
-    
-    # Schedule the function to be called again after 600 ms
-    root.after(600, update_labels)
-
-# Start updating labels
-update_labels()
-
-# Run the Tkinter event loop
-root.mainloop()
+ani = animation.FuncAnimation(fig, update, frames=np.arange(0, 1000), init_func=init, blit=True, interval=600)
+plt.show()
