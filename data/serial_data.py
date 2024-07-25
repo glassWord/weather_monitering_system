@@ -10,7 +10,7 @@ def weather_data():
     new_humid = random.randint(60, 70)
     new_air_quality = random.randint(30, 40)
     
-    df = pd.read_csv("example_pandas.csv")
+    df = pd.read_csv(csv_file)
     print(df)
     new_data = {
         'Temperature': [df.iloc[-1,0]],  # List of one item
