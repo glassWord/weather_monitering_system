@@ -2,19 +2,20 @@ import random
 import pandas as pd
 import time
 
-csv_file = "weather_data.csv"
+csv_file = "data/weather_data.csv"
 rest_time = 1  # In seconds
 
 def weather_data():
-    # Generate new data
     new_temp = random.randint(25, 35)
     new_humid = random.randint(60, 70)
     new_air_quality = random.randint(30, 40)
-
+    
+    df = pd.read_csv("example_pandas.csv")
+    print(df)
     new_data = {
-        'Temperature': [new_temp],  # List of one item
-        'Humidity': [new_humid],    # List of one item
-        'AirQuality': [new_air_quality]  # List of one item
+        'Temperature': [df.iloc[-1,0]],  # List of one item
+        'Humidity': [df.iloc[-1,1]],    # List of one item
+        'AirQuality': [df.iloc[-1,2]]  # List of one item
     }
 
     # Convert new data to DataFrame

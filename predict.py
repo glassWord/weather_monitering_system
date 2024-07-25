@@ -4,21 +4,23 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 import tkinter as tk
 
-rest_time = 600 # in Ms
+rest_time = 6000 # in Ms
 
-rows_to_read_only=12 # Limit 
-
-# Function to load initial data from CSV
-def load_initial_data(csv_file):
-    df = pd.read_csv(csv_file,nrows=rows_to_read_only)
-    return {
-        'Temperature': df['Temperature'].tolist(),
-        'Humidity': df['Humidity'].tolist(),
-        'AirQuality': df['AirQuality'].tolist(),
+csv_file = "data/weather_data.csv" 
+max_ele = 40
+def load_initial_data(csv_file, end_point=max_ele):
+    data = pd.read_csv(csv_file)
+    start_index = max(0, len(data) - end_point)  # Ensure start index is non-negative
+    data_to_predict = {
+        'Temperature': data['Temperature'].tolist()[start_index:],
+        'Humidity': data['Humidity'].tolist()[start_index:],
+        'AirQuality': data['AirQuality'].tolist()[start_index:],
     }
+    return data_to_predict
 
-# Load data from CSV file
-initial_data = load_initial_data('data/weather_data.csv')
+initial_data = load_initial_data(csv_file,max_ele)
+
+print(pd.DataFrame(initial_data))
 
 # Tkinter Setup
 root = tk.Tk()
@@ -36,39 +38,36 @@ label_air.pack(pady=5)
 
 # Function to predict weather
 def predict_weather(data):
-    df = pd.DataFrame(data)
-    
-    # Create dummy features if needed
-    if len(df) > 0:
-        X = pd.DataFrame({'Feature1': np.ones(len(df))})  # Dummy feature
-        y_temp = df['Temperature']
-        y_humid = df['Humidity']
-        y_air_quality = df['AirQuality']
-        
-        # Split the data into training/testing sets for each target
-        X_train_temp, X_test_temp, y_train_temp, y_test_temp = train_test_split(X, y_temp, test_size=0.2, random_state=42)
-        X_train_humid, X_test_humid, y_train_humid, y_test_humid = train_test_split(X, y_humid, test_size=0.2, random_state=42)
-        X_train_air, X_test_air, y_train_air, y_test_air = train_test_split(X, y_air_quality, test_size=0.2, random_state=42)
+    data = load_initial_data(csv_file,max_ele) 
+    if not data or not any(data.values()):  # Check if data is empty
+        return [[[], [], []], [[], [], []]]  # Return empty predictions if no data
 
-        # Model Training
-        model_temp = LinearRegression()
-        model_temp.fit(X_train_temp, y_train_temp)
-        
-        model_humid = LinearRegression()
-        model_humid.fit(X_train_humid, y_train_humid)
-        
-        model_air = LinearRegression()
-        model_air.fit(X_train_air, y_train_air)
-        
-        # Prediction
-        y_pred_temp = model_temp.predict(X_test_temp)
-        y_pred_humid = model_humid.predict(X_test_humid)
-        y_pred_air = model_air.predict(X_test_air)
+    X = np.ones((len(data['Temperature']), 1))  # Dummy feature
+    y_temp = np.array(data['Temperature'])
+    y_humid = np.array(data['Humidity'])
+    y_air_quality = np.array(data['AirQuality'])
 
-        return [[y_pred_temp, y_pred_humid, y_pred_air], [y_test_temp, y_test_humid, y_test_air]]
-    else:
-        # Return default values if no data is available
-        return [[[], [], []], [[], [], []]]
+    # Split the data into training/testing sets for each target
+    X_train_temp, X_test_temp, y_train_temp, y_test_temp = train_test_split(X, y_temp, test_size=0.2, random_state=42)
+    X_train_humid, X_test_humid, y_train_humid, y_test_humid = train_test_split(X, y_humid, test_size=0.2, random_state=42)
+    X_train_air, X_test_air, y_train_air, y_test_air = train_test_split(X, y_air_quality, test_size=0.2, random_state=42)
+
+    # Model Training
+    model_temp = LinearRegression()
+    model_temp.fit(X_train_temp, y_train_temp)
+
+    model_humid = LinearRegression()
+    model_humid.fit(X_train_humid, y_train_humid)
+
+    model_air = LinearRegression()
+    model_air.fit(X_train_air, y_train_air)
+
+    # Prediction
+    y_pred_temp = model_temp.predict(X_test_temp)
+    y_pred_humid = model_humid.predict(X_test_humid)
+    y_pred_air = model_air.predict(X_test_air)
+
+    return [[y_pred_temp, y_pred_humid, y_pred_air], [y_test_temp, y_test_humid, y_test_air]]
 
 # Function to print results
 def result_print(y_pred_temp, y_pred_humid, y_pred_air):

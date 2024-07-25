@@ -40,7 +40,7 @@ def init():
     ax_humid.set_title('Humidity')
     
     ax_air.set_xlim(0, 100)
-    ax_air.set_ylim(0, 120)
+    ax_air.set_ylim(100, 220)
     ax_air.legend()
     ax_air.set_title('Air Quality')
     
