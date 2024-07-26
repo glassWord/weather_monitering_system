@@ -29,18 +29,18 @@ line_humid, = ax_humid.plot([], [], 'g-', label='Humidity')
 line_air, = ax_air.plot([], [], 'b-', label='AirQuality')
 
 def init():
-    ax_temp.set_xlim(0, 100)
-    ax_temp.set_ylim(0, 120)
+    ax_temp.set_xlim(0,100)
+    ax_temp.set_ylim(20, 60)
     ax_temp.legend()
     ax_temp.set_title('Temperature')
     
-    ax_humid.set_xlim(0, 100)
-    ax_humid.set_ylim(0, 120)
+    ax_humid.set_xlim(0,100)
+    ax_humid.set_ylim(45, 54)
     ax_humid.legend()
     ax_humid.set_title('Humidity')
     
     ax_air.set_xlim(0, 100)
-    ax_air.set_ylim(100, 220)
+    ax_air.set_ylim(130, 145)
     ax_air.legend()
     ax_air.set_title('Air Quality')
     
@@ -95,4 +95,7 @@ def main():
         print("\n Closed.")
 
 if __name__ == "__main__":
+    main()
+else:
+    print("visualization starts")
     main()

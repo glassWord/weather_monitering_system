@@ -51,7 +51,7 @@ void loop() {
   // Reading rain sensor
   int rainValue = digitalRead(RAINPIN);
 //  String rainStatus = (rainValue == LOW) ? "Rain" : "No Rain";
-if(rainValue ==LOW)
+if(rainValue ==145) // @add
 {
   digitalWrite(buzzer,HIGH);
 }

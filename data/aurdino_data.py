@@ -1,7 +1,8 @@
 import serial
-import time
-import csv
+import pandas as pd
+import time 
 
+# Initialize an empty dictionary to store data
 data = {
     'Temperature': [],
     'Humidity': [],
@@ -11,27 +12,21 @@ data = {
 # Define the serial port and configure explicitly
 ser = serial.Serial(port='COM5', baudrate=9600, timeout=1)
 
-# * This 
-
-# Initial data dictionary
-def export_data_to_csv(filename):
-    with open(filename, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(['Temperature', 'Humidity', 'AirQuality'])
-        for i in range(len(data['Temperature'])):
-            writer.writerow([data['Temperature'][i], data['Humidity'][i], data['AirQuality'][i]])
 
 def read_from_serial():
     # Attempt to read a line of data from the Arduino
-    if ser.in_waiting > 0:
-    
-        return data
-    else:
-        return None
+        data_str = ser.readline().decode('utf-8').strip()
+        return data_str
 
-def update_data(data_str):
-    # Parse the incoming data and update the 'data' dictionary
-    lines = data_str.split('\n')
+def main():
+    data_str=(read_from_serial())
+    lines =None
+
+    try:
+        lines = data_str.split('\n')
+    except:
+        print("value none")
+
     for line in lines:
         if line.startswith('Temperature:'):
             temperature = float(line.split(':')[1].split('*')[0].strip())
@@ -42,27 +37,29 @@ def update_data(data_str):
         elif line.startswith('Air Quality (MQ-135):'):
             air_quality = int(line.split(':')[1].strip())
             data['AirQuality'].append(air_quality)
-   
-def print_data_interval(interval):
-    while True:
-        data_str = read_from_serial()
-        if data_str:
-            update_data(data_str)
-            print(f"Updated data: {data}")
-        
-        # Wait for the specified interval
-        time.sleep(interval)
 
+
+def csv_write(data):
+    df = pd.DataFrame(data)
+    csv_file = 'data/weather_data.csv'
+    df.to_csv(csv_file, index=False)
 if __name__ == '__main__':
     try:
-        # Print data every 5 seconds
-        print_data_interval(5)
+        while True:
+            time.sleep(0.5)
+            main()
+            try:
+                csv_write(data)
+            except:
+                print("data is empty")
+                print("data updated.")
     except KeyboardInterrupt:
         print('Interrupted')
+        print(data)
+        csv_write(data)
+
     finally:
         ser.close()
-
-
-
-# Initial export of data to CSV file
-export_data_to_csv('initial_data.csv')
+else:
+  print("Not allow use file in this manner.")
+        
