@@ -13,13 +13,13 @@ rest_time = 6000  # in ms
 csv_file = "data/weather_data.csv"
 max_ele = 40
 
-class ModernDarkApp(tk.Tk):
+class ModernWhiteApp(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Modern Dark Theme App")
-        self.configure(bg='#121212')
+        self.title("Modern White Theme App")
+        self.configure(bg='#FFFFFF')
         self.state('zoomed')  # Start in full-screen mode
-        self.accent_color = '#E0E0E0'  # Light white accent color
+        self.accent_color = '#333333'  # Dark gray accent color for text
         self.font_large = ("Helvetica", 24)
         self.font_medium = ("Helvetica", 18)
         self.font_small = ("Helvetica", 12)  # Slightly smaller font size for predicted data
@@ -33,35 +33,35 @@ class ModernDarkApp(tk.Tk):
 
     def create_widgets(self):
         # Left frame (for predicted data)
-        left_frame = tk.Frame(self, bg='#121212')
+        left_frame = tk.Frame(self, bg='#FFFFFF')
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
      
-      # Frame for bottom left (for additional info or controls)
-        self.bottom_left_frame = tk.Frame(self, bg='#eee', height=100)
+        # Frame for bottom left (for additional info or controls)
+        self.bottom_left_frame = tk.Frame(self, bg='#F0F0F0', height=100)
         self.bottom_left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=False)
         self.bottom_left_frame.pack_propagate(False)  # Prevent the frame from resizing to fit its content
 
-        # Predicted data section without background rectangle
-        tk.Label(left_frame, text="Predicted Data", font=self.font_large, fg='#90EE90', bg='#121212', anchor='w').pack(pady=10, padx=20, anchor='w')
+        # Predicted data section
+        tk.Label(left_frame, text="Predicted Data", font=self.font_large, fg='#333333', bg='#FFFFFF', anchor='w').pack(pady=10, padx=20, anchor='w')
         
-        self.label_temp = tk.Label(left_frame, text="Predicted Temperature: ", font=self.font_small, fg='#90EE90', bg='#121212', anchor='w')
+        self.label_temp = tk.Label(left_frame, text="Predicted Temperature: ", font=self.font_small, fg='#333333', bg='#FFFFFF', anchor='w')
         self.label_temp.pack(pady=5, padx=20, anchor='w')
 
-        self.label_humid = tk.Label(left_frame, text="Predicted Humidity: ", font=self.font_small, fg='#90EE90', bg='#121212', anchor='w')
+        self.label_humid = tk.Label(left_frame, text="Predicted Humidity: ", font=self.font_small, fg='#333333', bg='#FFFFFF', anchor='w')
         self.label_humid.pack(pady=5, padx=20, anchor='w')
 
-        self.label_air = tk.Label(left_frame, text="Predicted Air Quality: ", font=self.font_small, fg='#90EE90', bg='#121212', anchor='w')
+        self.label_air = tk.Label(left_frame, text="Predicted Air Quality: ", font=self.font_small, fg='#333333', bg='#FFFFFF', anchor='w')
         self.label_air.pack(pady=5, padx=20, anchor='w')
 
         # Graphs section (right side)
-        graph_frame = tk.Frame(self, bg='#121212')
+        graph_frame = tk.Frame(self, bg='#FFFFFF')
         graph_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
         self.create_graphs(graph_frame)
 
     def create_graphs(self, parent):
         # Initialize figure and axes for multiple subplots
         self.fig, (self.ax_temp, self.ax_humid, self.ax_air) = plt.subplots(3, 1, figsize=(14, 18))  # Increased width
-        self.fig.patch.set_facecolor('#121212')
+        self.fig.patch.set_facecolor('#FFFFFF')
 
         # Initialize data lists for plotting
         self.xdata, self.ydata_temp, self.ydata_humid, self.ydata_air = [], [], [], []
@@ -79,27 +79,12 @@ class ModernDarkApp(tk.Tk):
 
     def init_plot(self):
         for ax in [self.ax_temp, self.ax_humid, self.ax_air]:
-            ax.set_facecolor('#1E1E1E')
+            ax.set_facecolor('#FFFFFF')
             ax.tick_params(colors=self.accent_color)
             for spine in ax.spines.values():
                 spine.set_color(self.accent_color)
 
-        # self.ax_temp.set_xlim(0, 100)
-        # self.ax_temp.set_ylim(0, 120)
-        # self.ax_temp.legend()
-        # self.ax_temp.set_title('Temperature', color=self.accent_color)
-        
-        # self.ax_humid.set_xlim(0, 100)
-        # self.ax_humid.set_ylim(0, 120)
-        # self.ax_humid.legend()
-        # self.ax_humid.set_title('Humidity', color=self.accent_color)
-        
-        # self.ax_air.set_xlim(0, 100)
-        # self.ax_air.set_ylim(100, 220)
-        # self.ax_air.legend()
-        # self.ax_air.set_title('Air Quality', color=self.accent_color)
-        # Set valid color code for titles (e.g., light pink color)
-        title_color = '#Fff'
+        title_color = '#333333'
 
         self.ax_temp.set_xlim(0, 100)
         self.ax_temp.set_ylim(20, 60)
@@ -107,12 +92,12 @@ class ModernDarkApp(tk.Tk):
         self.ax_temp.set_title('Temperature', color=title_color)
 
         self.ax_humid.set_xlim(0, 100)
-        self.ax_humid.set_ylim(40, 54)
+        self.ax_humid.set_ylim(30, 64)
         self.ax_humid.legend()
         self.ax_humid.set_title('Humidity', color=title_color)
 
         self.ax_air.set_xlim(0, 100)
-        self.ax_air.set_ylim(130, 145)
+        self.ax_air.set_ylim(120, 300)
         self.ax_air.legend()
         self.ax_air.set_title('Air Quality', color=title_color)
 
@@ -123,6 +108,9 @@ class ModernDarkApp(tk.Tk):
         new_data = self.weather_data()
         if isinstance(new_data, pd.DataFrame) and not new_data.empty:
             new_data = new_data.iloc[0]  # Get the first row of new_data
+
+            # Remove empty or all-NA columns from new_data
+            new_data = new_data.dropna(how='all')
 
             # Append new data to the DataFrame
             self.df = pd.concat([self.df, new_data.to_frame().T], ignore_index=True)
@@ -151,28 +139,36 @@ class ModernDarkApp(tk.Tk):
 
     def weather_data(self):
         if os.path.exists(csv_file):
-            # Read the CSV file into a DataFrame
-            df = pd.read_csv(csv_file)
-
-            if not df.empty:
-                # Return the last row of the DataFrame
-                return df.iloc[[-1]].reset_index(drop=True)
-
-        # Return a DataFrame with default values if the CSV file is empty or missing
+            try:
+                # Read the CSV file into a DataFrame
+                df = pd.read_csv(csv_file)
+                
+                if not df.empty and all(col in df.columns for col in ['Temperature', 'Humidity', 'AirQuality']):
+                    # Return the last row of the DataFrame
+                    return df.iloc[[-1]].reset_index(drop=True)
+            
+            except pd.errors.EmptyDataError:
+                print("The CSV file is empty or not readable.")
+    
+    # Return a DataFrame with default values if the CSV file is empty or missing
         return pd.DataFrame({'Temperature': [0], 'Humidity': [0], 'AirQuality': [0]})
 
     def load_initial_data(self, csv_file, end_point=max_ele):
         if os.path.exists(csv_file):
-            data = pd.read_csv(csv_file)
-            start_index = max(0, len(data) - end_point)  # Ensure start index is non-negative
-            data_to_predict = {
-                'Temperature': data['Temperature'].tolist()[start_index:],
-                'Humidity': data['Humidity'].tolist()[start_index:],
-                'AirQuality': data['AirQuality'].tolist()[start_index:],
-            }
-            return data_to_predict
-        else:
-            return {'Temperature': [], 'Humidity': [], 'AirQuality': []}
+            try:
+                data = pd.read_csv(csv_file)
+                if not data.empty and all(col in data.columns for col in ['Temperature', 'Humidity', 'AirQuality']):
+                    start_index = max(0, len(data) - end_point)  # Ensure start index is non-negative
+                    data_to_predict = {
+                        'Temperature': data['Temperature'].tolist()[start_index:],
+                        'Humidity': data['Humidity'].tolist()[start_index:],
+                        'AirQuality': data['AirQuality'].tolist()[start_index:],
+                    }
+                    return data_to_predict
+            except pd.errors.EmptyDataError:
+                print("The CSV file is empty or not readable.")
+        return {'Temperature': [], 'Humidity': [], 'AirQuality': []}
+
 
     def predict_weather(self, data):
         data = self.load_initial_data(csv_file, max_ele)
@@ -209,5 +205,5 @@ class ModernDarkApp(tk.Tk):
         self.after(rest_time, self.update_labels)
 
 if __name__ == "__main__":
-    app = ModernDarkApp()
+    app = ModernWhiteApp()
     app.mainloop()
