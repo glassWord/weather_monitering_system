@@ -12,7 +12,7 @@ Hi, I’m **Arihant from Class 9A**, I had make the STEM project with the collab
 
 - Dth Sensor
 - Temperature Sensor
-- Humidity Sensor**
+- Humidity Sensor
 
 > **Weather Stations:** I prepare a model of weather station, to showcaseing that how weather data collects, including information on temperature, humidity and Air qualtity.
 
@@ -28,8 +28,9 @@ Hi, I’m **Arihant from Class 9A**, I had make the STEM project with the collab
 - MatplotLib (Graph)
 - Pandas (Data)
 - skit-learn (Machine Learning)
-- **Easy to Use:** The system has a simple and user-friendly interface. You can easily check the current weather, as well as short-term and long-term forecasts.
-- **Clear Display:** Weather information is displayed clearly, making it easy to understand.
+
+> **Easy to Use:** The system has a simple and user-friendly interface. You can easily check the current weather, as well as short-term and long-term forecasts.
+> **Clear Display:** Weather information is displayed clearly, making it easy to understand.
 
 ---
 
