@@ -8,19 +8,29 @@ Hi, I’m **Arihant from Class 9A**, and today I’m presenting a simple weather
 
 ### 1. Data Collection:
 
-   - **Weather Stations:** I prepare a model of weather station, to showcaseing that how weather data collects, including information on temperature, humidity and Air qualtity.
+#### Sensors
+   - Dth Sensor
+   - Temperature Sensor
+   - Humidity Sensor
+
+-  **Weather Stations:** I prepare a model of weather station, to showcaseing that how weather data collects, including information on temperature, humidity and Air qualtity.
 
 ### 2. Data Analysis:
 
-   - **Simple Algorithms:** I use *Linear regression*  to predict temp and other values.
+- **Simple Algorithms:** I use *Linear regression*  to predict temp and other values.
 
 ### 3. User Interface:
 
-   - **Easy to Use:** The system has a simple and user-friendly interface. You can easily check the current weather, as well as short-term and long-term forecasts.
-   - **Clear Display:** Weather information is displayed clearly, making it easy to understand.
+#### Library
+   - Tkinter (App)
+   - MatplotLib (Graph)
+   - Pandas (Data)
+
+- **Easy to Use:** The system has a simple and user-friendly interface. You can easily check the current weather, as well as short-term and long-term forecasts.
+- **Clear Display:** Weather information is displayed clearly, making it easy to understand.
 
 ---
 
-The Qwerjj Weather Prediction System is a practical tool that makes weather forecasting easy and accessible. By combining data collection with simple analysis, it offers reliable weather updates to help us make informed decisions.
+The Arihant Jain Weather Prediction System is a practical tool that makes weather forecasting easy and accessible. By combining data collection with simple analysis, it offers reliable weather updates to help us make informed decisions.
 
 ---
