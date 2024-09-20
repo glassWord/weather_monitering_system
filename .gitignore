@@ -3,5 +3,7 @@ lib/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# present file
+present.md 
 # virtual environment
 venv/
